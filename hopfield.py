@@ -62,7 +62,7 @@ def imprimir_grid(v, R, C, titulo):
         r += 1
 
 def imprimir_vector(v, titulo):
-    # Solo para ver el producto U·T
+    # Utilidad opcional para depuración (no se usa por defecto)
     s = " ".join(str(x) for x in v)
     print(f"{titulo}: {s}")
 
@@ -165,7 +165,7 @@ def entrenar(patrones):
     diagonal_cero(T)
     return T
 
-def recuperar(u0, T, R, C, max_iter=50, verbose=True):
+def recuperar(u0, T, R, C, max_iter=50, verbose=True, mostrar_producto=False):
     # Recuperación sincrónica estilo do-while
     U = u0[:]
     k = 0
@@ -174,7 +174,9 @@ def recuperar(u0, T, R, C, max_iter=50, verbose=True):
 
     while True:
         y = vector_por_matriz(U, T)
-        if verbose:
+
+        # (IMPORTANTE) Ya no imprimimos U(k)·T por defecto
+        if verbose and mostrar_producto:
             imprimir_vector(y, f"U({k})·T")
 
         # aplicar función de activación
@@ -229,7 +231,7 @@ def main():
 
         # validación simple 8x5
         if len(M) != R or len(M[0]) != C:
-            print("Formato inválido en", archivos[idx], "(se esperaba 8x5)")
+            print("Formato inválido en", archivos[idx], "( 8x5)")
             return
 
         v = aplanar(M)
@@ -252,11 +254,12 @@ def main():
 
     imprimir_grid(A, R, C, "Entrada (A)")
 
-    # 5) Recuperar (mostrando TODAS las iteraciones)
-    U = recuperar(A, T, R, C, max_iter=50, verbose=True)
+    # 5) Recuperar (mostrando grids por iteración, sin el producto U·T)
+    U = recuperar(A, T, R, C, max_iter=50, verbose=True, mostrar_producto=False)
 
     # Resultado final
     imprimir_grid(U, R, C, "Salida(U)")
 
 if __name__ == "__main__":
     main()
+
